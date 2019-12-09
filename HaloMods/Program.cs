@@ -106,6 +106,16 @@ namespace HaloMods
                 }
             }
 
+            Console.WriteLine("Moding pak");
+            List<HexEditData> enableForge = new List<HexEditData>() { 
+            new HexEditData() { Position = 0x1E302110, Bytes = 0x27},
+            new HexEditData() { Position = 0x1E2F52D0, Bytes = 0x27}};
+
+            string loco = @"D:\- Halo\Clean\MODS\Mods\MCC-WindowsNoEditor.pak";
+            FileStuff.HexEdit(loco, enableForge);
+            Console.WriteLine("Moding pak");
+            //Console.ReadKey();
+
             Console.WriteLine("Reading files. Ignoring {0} folders and {1} files", IgnoreFolders.Count, IgnoreFiles.Count);
             //Get Dictionary of all files and their paths
             Dictionary<string, string> Files = FileStuff.GetListOfAllFiles(HaloInstallFolder, IgnoreFolders.ToArray(), IgnoreFiles.ToArray());
@@ -235,5 +245,24 @@ namespace HaloMods
             }
             return FilesNames;
         }
+
+
+        public static void HexEdit(string FileName, List<HexEditData> Data) 
+        {
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.ReadWrite))
+            {
+                foreach (var item in Data)
+                {
+                    stream.Position = item.Position;
+                    stream.WriteByte(item.Bytes);
+                }
+            }
+        }
+    }
+
+    public struct HexEditData
+    {
+        public long Position;
+        public byte Bytes;
     }
 }
