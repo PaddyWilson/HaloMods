@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 //fsutil.exe hardlink list "D:\- Halo\Clean\haloreach\maps\forge_halo.map"
 namespace HaloMods
 {
@@ -12,6 +13,10 @@ namespace HaloMods
     {
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new HaloMods());
+
             string HaloInstallFolder = @"D:/- Halo/Clean/";
             string VanillaFolder = HaloInstallFolder + @"MODS/Vanilla Files/";
             string ModsFolder = HaloInstallFolder + @"MODS/Mods/";
@@ -24,11 +29,17 @@ namespace HaloMods
             bool IsModded = false;
             string txtFileSettings = "settings.txt";
 
+            bool EnableForge = true;
+            bool RemoveStartUpVideo = true;
+
             //read settings
             if (!File.Exists(txtFileSettings))
             {
+                Console.WriteLine("Init setup running.");
+                //make settings file
                 File.WriteAllText(txtFileSettings, Properties.Resources.settings);
             }
+            
             if (File.Exists(txtFileSettings))
             {
                 string[] settings = File.ReadAllLines(txtFileSettings);
@@ -52,6 +63,10 @@ namespace HaloMods
                         IgnoreFiles.Add(split[1]);
                     else if (split[0] == "create-backups")
                         CreateBackups = bool.Parse(split[1]);
+                    else if (split[0] == "EnableForge")
+                        EnableForge = bool.Parse(split[1]);
+                    else if (split[0] == "RemoveStartUpVideo")
+                        RemoveStartUpVideo = bool.Parse(split[1]);
                     else
                         continue;
                 }
@@ -106,15 +121,16 @@ namespace HaloMods
                 }
             }
 
-            Console.WriteLine("Moding pak");
-            List<HexEditData> enableForge = new List<HexEditData>() { 
-            new HexEditData() { Position = 0x1E302110, Bytes = 0x27},
-            new HexEditData() { Position = 0x1E2F52D0, Bytes = 0x27}};
+            //Console.WriteLine("Moding pak");
+            //List<HexEditData> enableForge = new List<HexEditData>() {
+            //new HexEditData() { Position = 0x1E302110, Bytes = 0x27},
+            //new HexEditData() { Position = 0x1E2F52D0, Bytes = 0x27}};
 
-            string loco = @"D:\- Halo\Clean\MODS\Mods\MCC-WindowsNoEditor.pak";
-            FileStuff.HexEdit(loco, enableForge);
-            Console.WriteLine("Moding pak");
-            //Console.ReadKey();
+            ////string loco = @"D:\- Halo\Clean\MODS\Mods\MCC-WindowsNoEditor.pak";
+            //string loco = @"C:\Users\GGGGG\Desktop\Halo\swap.py";
+            //FileStuff.HexEdit(loco, enableForge);
+            //Console.WriteLine("Moding pak");
+            ////
 
             Console.WriteLine("Reading files. Ignoring {0} folders and {1} files", IgnoreFolders.Count, IgnoreFiles.Count);
             //Get Dictionary of all files and their paths
@@ -247,16 +263,25 @@ namespace HaloMods
         }
 
 
-        public static void HexEdit(string FileName, List<HexEditData> Data) 
+        public static void HexEdit(string FileName, List<HexEditData> Data)
         {
-            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.ReadWrite))
+            try
             {
-                foreach (var item in Data)
+                using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    stream.Position = item.Position;
-                    stream.WriteByte(item.Bytes);
+                    foreach (var item in Data)
+                    {
+                        stream.Position = item.Position;
+                        stream.WriteByte(item.Bytes);
+                    }
                 }
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("ERROR Can't hexedit file. File not found. \"{0}\"", FileName);
+                //throw;
+            }
+
         }
     }
 
