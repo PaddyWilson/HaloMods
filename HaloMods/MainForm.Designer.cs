@@ -38,8 +38,13 @@
             this.txtModsLocation = new System.Windows.Forms.TextBox();
             this.btnModsLocate = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lstHRSwapsToLoad = new System.Windows.Forms.ListBox();
             this.btnHRLoadQuick = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnHROtherQuickSwap = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnDeleteTempSwap = new System.Windows.Forms.Button();
+            this.lstTempSwap = new System.Windows.Forms.ListBox();
             this.btnHRMod = new System.Windows.Forms.Button();
             this.btnHRSelectModded = new System.Windows.Forms.Button();
             this.btnHRSelectOriginal = new System.Windows.Forms.Button();
@@ -66,11 +71,6 @@
             this.txtLog = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.lstHRSwapsToLoad = new System.Windows.Forms.ListBox();
-            this.btnHROtherQuickSwap = new System.Windows.Forms.Button();
-            this.lstTempSwap = new System.Windows.Forms.ListBox();
-            this.btnDeleteTempSwap = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -107,7 +107,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(722, 433);
+            this.tabPage2.Size = new System.Drawing.Size(722, 399);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -136,6 +136,7 @@
             this.btnMCCLocate.Name = "btnMCCLocate";
             this.btnMCCLocate.Size = new System.Drawing.Size(75, 23);
             this.btnMCCLocate.TabIndex = 2;
+            this.btnMCCLocate.Tag = "";
             this.btnMCCLocate.Text = "Locate";
             this.btnMCCLocate.UseVisualStyleBackColor = true;
             this.btnMCCLocate.Click += new System.EventHandler(this.btnMCCLocate_Click);
@@ -191,6 +192,14 @@
             this.tabPage1.Text = "Halo Reach";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // lstHRSwapsToLoad
+            // 
+            this.lstHRSwapsToLoad.FormattingEnabled = true;
+            this.lstHRSwapsToLoad.Location = new System.Drawing.Point(451, 21);
+            this.lstHRSwapsToLoad.Name = "lstHRSwapsToLoad";
+            this.lstHRSwapsToLoad.Size = new System.Drawing.Size(265, 238);
+            this.lstHRSwapsToLoad.TabIndex = 25;
+            // 
             // btnHRLoadQuick
             // 
             this.btnHRLoadQuick.Location = new System.Drawing.Point(168, 161);
@@ -220,6 +229,43 @@
             this.groupBox3.TabIndex = 23;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Other files to mod";
+            // 
+            // btnHROtherQuickSwap
+            // 
+            this.btnHROtherQuickSwap.Location = new System.Drawing.Point(384, 27);
+            this.btnHROtherQuickSwap.Name = "btnHROtherQuickSwap";
+            this.btnHROtherQuickSwap.Size = new System.Drawing.Size(49, 62);
+            this.btnHROtherQuickSwap.TabIndex = 26;
+            this.btnHROtherQuickSwap.Text = "Load With Quick Switch";
+            this.btnHROtherQuickSwap.UseVisualStyleBackColor = true;
+            this.btnHROtherQuickSwap.Click += new System.EventHandler(this.btnHROtherQuickSwap_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(442, 9);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(106, 13);
+            this.label11.TabIndex = 28;
+            this.label11.Text = "Temporary Swap List";
+            // 
+            // btnDeleteTempSwap
+            // 
+            this.btnDeleteTempSwap.Location = new System.Drawing.Point(512, 74);
+            this.btnDeleteTempSwap.Name = "btnDeleteTempSwap";
+            this.btnDeleteTempSwap.Size = new System.Drawing.Size(104, 23);
+            this.btnDeleteTempSwap.TabIndex = 27;
+            this.btnDeleteTempSwap.Text = "Delete Swap";
+            this.btnDeleteTempSwap.UseVisualStyleBackColor = false;
+            this.btnDeleteTempSwap.Click += new System.EventHandler(this.btnDeleteTempSwap_Click);
+            // 
+            // lstTempSwap
+            // 
+            this.lstTempSwap.FormattingEnabled = true;
+            this.lstTempSwap.Location = new System.Drawing.Point(445, 25);
+            this.lstTempSwap.Name = "lstTempSwap";
+            this.lstTempSwap.Size = new System.Drawing.Size(259, 43);
+            this.lstTempSwap.TabIndex = 27;
             // 
             // btnHRMod
             // 
@@ -406,7 +452,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(722, 433);
+            this.tabPage3.Size = new System.Drawing.Size(722, 399);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -480,51 +526,6 @@
             this.label10.Size = new System.Drawing.Size(234, 17);
             this.label10.TabIndex = 25;
             this.label10.Text = "Quit MCC before using Quick Switch";
-            // 
-            // lstHRSwapsToLoad
-            // 
-            this.lstHRSwapsToLoad.FormattingEnabled = true;
-            this.lstHRSwapsToLoad.Location = new System.Drawing.Point(451, 21);
-            this.lstHRSwapsToLoad.Name = "lstHRSwapsToLoad";
-            this.lstHRSwapsToLoad.Size = new System.Drawing.Size(265, 238);
-            this.lstHRSwapsToLoad.TabIndex = 25;
-            // 
-            // btnHROtherQuickSwap
-            // 
-            this.btnHROtherQuickSwap.Location = new System.Drawing.Point(384, 27);
-            this.btnHROtherQuickSwap.Name = "btnHROtherQuickSwap";
-            this.btnHROtherQuickSwap.Size = new System.Drawing.Size(49, 62);
-            this.btnHROtherQuickSwap.TabIndex = 26;
-            this.btnHROtherQuickSwap.Text = "Load With Quick Switch";
-            this.btnHROtherQuickSwap.UseVisualStyleBackColor = true;
-            this.btnHROtherQuickSwap.Click += new System.EventHandler(this.btnHROtherQuickSwap_Click);
-            // 
-            // lstTempSwap
-            // 
-            this.lstTempSwap.FormattingEnabled = true;
-            this.lstTempSwap.Location = new System.Drawing.Point(445, 25);
-            this.lstTempSwap.Name = "lstTempSwap";
-            this.lstTempSwap.Size = new System.Drawing.Size(259, 43);
-            this.lstTempSwap.TabIndex = 27;
-            // 
-            // btnDeleteTempSwap
-            // 
-            this.btnDeleteTempSwap.Location = new System.Drawing.Point(512, 74);
-            this.btnDeleteTempSwap.Name = "btnDeleteTempSwap";
-            this.btnDeleteTempSwap.Size = new System.Drawing.Size(104, 23);
-            this.btnDeleteTempSwap.TabIndex = 27;
-            this.btnDeleteTempSwap.Text = "Delete Swap";
-            this.btnDeleteTempSwap.UseVisualStyleBackColor = false;
-            this.btnDeleteTempSwap.Click += new System.EventHandler(this.btnDeleteTempSwap_Click);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(442, 9);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(106, 13);
-            this.label11.TabIndex = 28;
-            this.label11.Text = "Temporary Swap List";
             // 
             // HaloMods
             // 

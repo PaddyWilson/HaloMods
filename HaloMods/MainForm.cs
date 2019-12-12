@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HaloMods.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -60,6 +61,40 @@ namespace HaloMods
             txtMCCLocation.Text = MCCLocation;
             txtModsLocation.Text = ModsLocation;
 
+            Setup();
+        }
+
+        private void DisableButtonControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                DisableButtonControls(c);
+            }
+
+            var btn = con as Button;
+            if (btn != null)
+            {
+                if (btn.Text != "Locate")
+                    btn.Enabled = false;
+            }
+            //con.Enabled = false;
+        }
+
+        private void EnableButtonControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                EnableButtonControls(c);
+            }
+            var btn = con as Button;
+            if (btn != null)
+            {
+                btn.Enabled = true;
+            }
+        }
+
+        private void Setup()
+        {
             bool installed = CheckInstallMCCLocation();
 
             if (!installed)
@@ -67,8 +102,18 @@ namespace HaloMods
                 LogLine("MCC not installed at");
                 LogLine(MCCLocation);
                 LogLine("please change it in settings.");
+
+                //disable all buttons
+                DisableButtonControls(this);
                 return;
             }
+            else
+            {
+                LogLine("MCC is installed. " + MCCLocation);
+
+            }
+            EnableButtonControls(this);
+            LogLine("Mods is installed. " + ModsLocation);
 
             //create mods folders
             Directory.CreateDirectory(ModsLocation + "\\Mods\\Halo Reach\\Maps");
@@ -213,12 +258,13 @@ namespace HaloMods
             txtMCCLocation.Text = MCCLocation;
 
             //check if mcc is install in folder
-            if (!CheckInstallMCCLocation())
-            {
-                LogLine("MCC not installed here");
-                //MessageBox.Show("MCC not installed here", "MCC not installed here");
-            }
+            //if (!CheckInstallMCCLocation())
+            //{
+            //    LogLine("MCC not installed here");
+            //    MessageBox.Show("MCC not installed here", "MCC not installed here");
+            //}
             SaveSettings();
+            Setup();
         }
 
         private void btnModsLocate_Click(object sender, EventArgs e)
@@ -237,6 +283,7 @@ namespace HaloMods
             Directory.CreateDirectory(ModsLocation + "\\Vanilla\\Halo Reach");
 
             SaveSettings();
+            Setup();
         }
 
         #endregion
