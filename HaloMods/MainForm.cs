@@ -18,8 +18,9 @@ namespace HaloMods
         string ModsLocation = @"C:\Users\GGGGG\Desktop\HaloMCC Install\MODS";
 
         string StartupMovieFile = @"\mcc\content\movies\FMS_logo_microsoft_7_1_.bk2";
-
         string OriginalMCCpakFile = @"\mcc\content\paks\MCC-WindowsNoEditor.pak";
+
+        string txtFileSettings = "settings.txt";
 
         GameData HaloReach;// = new GameData();
 
@@ -28,6 +29,33 @@ namespace HaloMods
         public HaloMods()
         {
             InitializeComponent();
+
+            if (!File.Exists(txtFileSettings))
+            {
+                Console.WriteLine("Init setup running.");
+                //make settings file
+                File.WriteAllText(txtFileSettings, Properties.Resources.settings);
+            }
+
+            if (File.Exists(txtFileSettings))
+            {
+                string[] settings = File.ReadAllLines(txtFileSettings);
+
+                foreach (var item in settings)
+                {
+                    if (item.StartsWith("#") || item.Length == 0)
+                        continue;
+
+                    string[] split = item.Split('=');
+
+                    if (split[0] == "install-folder")
+                        MCCLocation = split[1];
+                    else if (split[0] == "mods-folder")
+                        ModsLocation = split[1];
+                    else
+                        continue;
+                }
+            }
 
             txtMCCLocation.Text = MCCLocation;
             txtModsLocation.Text = ModsLocation;
@@ -58,14 +86,15 @@ namespace HaloMods
 
 
             //halo reach tab setup
-            HaloReach = new GameData(MCCLocation + "\\haloreach\\maps", ModsLocation + "\\Vanilla\\Halo Reach\\Maps", ModsLocation + "\\Mods\\Halo Reach\\Maps");
+            HaloReach = new GameData("HaloReach.json", MCCLocation + "\\haloreach\\maps", ModsLocation + "\\Vanilla\\Halo Reach\\Maps", ModsLocation + "\\Mods\\Halo Reach\\Maps");
+            HaloReach.LoadSwapData();
 
             //populate the vanilla list
             lstHRVanillaMaps.Items.Clear();
             foreach (var item in HaloReach.VanillaMaps)
                 lstHRVanillaMaps.Items.Add(item.Key);
             //select first item
-            if (lstHRVanillaMaps.Items.Count > 0)
+            if (HaloReach.VanillaMaps.Count > 0)
                 lstHRVanillaMaps.SelectedIndex = 0;
 
             //populate the mods list
@@ -73,9 +102,10 @@ namespace HaloMods
             foreach (var item in HaloReach.ModdedMaps)
                 lstHRModdedMaps.Items.Add(item.Key);
             //select first item
-            if (lstHRModdedMaps.Items.Count > 0)
+            if (HaloReach.ModdedMaps.Count > 0)
                 lstHRModdedMaps.SelectedIndex = 0;
 
+            UpdateSwapList();
         }
 
         #region VanillaAndModdedButton
@@ -95,8 +125,35 @@ namespace HaloMods
             if (File.Exists(ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak"))
             {
                 LogLine("Swaping MCC-WindowsNoEditor.pak to vanilla.");
-                FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak");
+                try
+                {
+                    File.Delete(MCCLocation + OriginalMCCpakFile);
+                    FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak");
+                }
+                catch (Exception)
+                {
+                    LogLine("Can't swap pak files while game is running.");
+                }
             }
+
+            LogLine("Switching " + HaloReach.SwapData.Count + " items to vanilla.");
+            HaloReach.SwapToVanilla();
+            //foreach (var item in HaloReach.SwapData.Keys)
+            //{
+            //    //swap other files
+            //    //if (item.OtherFile)
+            //    //{
+            //    //    File.Delete(item.VanillaFilePath);
+            //    //    FileUtil.CreateHardLink(item.VanillaFilePath, ModsLocation + "\\Vanilla\\Halo Reach\\" + item.VanillaFileName);
+            //    //}
+            //    //else
+            //    //{
+            //    //    File.Delete(item.VanillaFilePath);
+            //    //    FileUtil.CreateHardLink(item.VanillaFilePath, item.ModdedFilePath);
+            //    //}
+            //}
+
+            LogLine("Swaped to Vanilla");
             btnVanilla.Enabled = true;
         }
 
@@ -115,14 +172,36 @@ namespace HaloMods
             if (File.Exists(ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak"))
             {
                 LogLine("Swaping MCC-WindowsNoEditor.pak to modded.");
-                FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak");
+                try
+                {
+                    File.Delete(MCCLocation + OriginalMCCpakFile);
+                    FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak");
+                }
+                catch (Exception)
+                {
+                    LogLine("Can't swap pak files while game is running.");
+                }
             }
+
+            LogLine("Switching " + HaloReach.SwapData.Count + " items to modded.");
+            HaloReach.SwapToModded();
+
+            LogLine("Swaped to Modded.");
             btnModded.Enabled = true;
         }
 
         #endregion
 
         #region Settings
+
+        private void SaveSettings()
+        {
+            File.Delete(txtFileSettings);
+            string output = "install-folder=" + MCCLocation + "\r\n" +
+                "mods-folder=" + ModsLocation;
+            File.WriteAllText(txtFileSettings, output);
+        }
+
         private void btnMCCLocate_Click(object sender, EventArgs e)
         {
             string path = FileUtil.OpenDirectoryDiag();
@@ -139,6 +218,7 @@ namespace HaloMods
                 LogLine("MCC not installed here");
                 //MessageBox.Show("MCC not installed here", "MCC not installed here");
             }
+            SaveSettings();
         }
 
         private void btnModsLocate_Click(object sender, EventArgs e)
@@ -156,10 +236,7 @@ namespace HaloMods
             Directory.CreateDirectory(ModsLocation + "\\Mods\\Halo Reach");
             Directory.CreateDirectory(ModsLocation + "\\Vanilla\\Halo Reach");
 
-            //if(MCCLocation[0] != ModsLocation[0])
-            //{
-            //    MessageBox.Show("Please select Folders on the drive EG. C: or D: etc");
-            //}
+            SaveSettings();
         }
 
         #endregion
@@ -216,8 +293,10 @@ namespace HaloMods
             new HexEditData() { Position = 0x1E302110, Bytes = 0x27},
             new HexEditData() { Position = 0x1E2F52D0, Bytes = 0x27}};
 
-            FileStuff.HexEdit(ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak", enableForge);
-            LogLine("Forge can now be enabled by pressing \"Modded\" button.");
+            FileUtil.HexEdit(ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak", enableForge);
+            FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak");
+
+            LogLine("Forge can now be enabled by pressing the \"Modded\" button.");
             //btnForge.Enabled = true;
         }
 
@@ -234,15 +313,13 @@ namespace HaloMods
                 btnHRSwapModded.Enabled = true;
                 return;
             }
-
-            if (lstHRModdedMaps.Items.Count == 0)
+            else if (lstHRModdedMaps.Items.Count == 0)
             {
                 LogLine("No modded maps found.");
                 btnHRSwapModded.Enabled = true;
                 return;
             }
-
-            if (lstHRModdedMaps.SelectedItem == null || lstHRVanillaMaps.SelectedItem == null)
+            else if (lstHRModdedMaps.SelectedItem == null || lstHRVanillaMaps.SelectedItem == null)
             {
                 LogLine("Please select a map from each list.");
                 btnHRSwapModded.Enabled = true;
@@ -252,11 +329,11 @@ namespace HaloMods
             string vanMap = lstHRVanillaMaps.SelectedItem.ToString();
             string modMap = lstHRModdedMaps.SelectedItem.ToString();
             //check if vanilla map is backed up
-            if (!File.Exists(ModsLocation + "\\Vanilla\\Halo Reach\\maps\\" + vanMap))
+            if (!File.Exists(HaloReach.VanillaBackupMapLocation + "\\" + vanMap))
             {
                 //create backup
                 Log("Backing up vanilla map \"" + vanMap + "\"");
-                File.Copy(MCCLocation + "\\haloreach\\maps\\" + vanMap, ModsLocation + "\\Vanilla\\Halo Reach\\maps\\" + vanMap);
+                File.Copy(HaloReach.VanillaMapLocation + "\\" + vanMap, HaloReach.VanillaBackupMapLocation + "\\" + vanMap);
                 LogLine(". Done");
             }
 
@@ -277,8 +354,7 @@ namespace HaloMods
                 btnHRSwapVanilla.Enabled = true;
                 return;
             }
-
-            if (lstHRVanillaMaps.SelectedItem == null)
+            else if (lstHRVanillaMaps.SelectedItem == null)
             {
                 LogLine("Please select a map from the vanilla list.");
                 btnHRSwapVanilla.Enabled = true;
@@ -288,7 +364,7 @@ namespace HaloMods
             string vanMap = lstHRVanillaMaps.SelectedItem.ToString();
 
             //check if vanilla map is backed up
-            if (!File.Exists(ModsLocation + "\\Vanilla\\Halo Reach\\maps\\" + vanMap))
+            if (!File.Exists(HaloReach.VanillaBackupMapLocation + "\\" + vanMap))
             {
                 //File has not been modded
                 LogLine("Vanilla map \"" + vanMap + "\" has never been swaped.");
@@ -297,8 +373,9 @@ namespace HaloMods
             }
 
             //delete hard linked file from vanilla map folder
-            File.Delete(MCCLocation + "\\haloreach\\maps\\" + vanMap);
+            File.Delete(HaloReach.VanillaMapLocation + "\\" + vanMap);
             HaloReach.ReloadMaps();
+            //create hardlink to vanilla map in backup folder
             FileUtil.CreateHardLink(HaloReach.VanillaMaps[vanMap], HaloReach.VanillaBackupMaps[vanMap]);
             LogLine(string.Format("Swaping \"{0}\" back to original", vanMap));
 
@@ -315,15 +392,13 @@ namespace HaloMods
                 btnHRLoadQuick.Enabled = true;
                 return;
             }
-
-            if (lstHRModdedMaps.Items.Count == 0)
+            else if (lstHRModdedMaps.Items.Count == 0)
             {
                 LogLine("No modded maps found.");
                 btnHRLoadQuick.Enabled = true;
                 return;
             }
-
-            if (lstHRModdedMaps.SelectedItem == null || lstHRVanillaMaps.SelectedItem == null)
+            else if (lstHRModdedMaps.SelectedItem == null || lstHRVanillaMaps.SelectedItem == null)
             {
                 LogLine("Please select a map from each list.");
                 btnHRLoadQuick.Enabled = true;
@@ -341,27 +416,21 @@ namespace HaloMods
                 LogLine(". Done");
             }
 
-            HaloReach.ReloadMaps();
-
-            SwapData data = new SwapData();
-
-            data.ModdedFileName = modMap;
-            data.ModdedFilePath = HaloReach.ModdedMaps[modMap];
-            data.VanillaFileName = vanMap;
-            data.VanillaFilePath = HaloReach.VanillaBackupMaps[vanMap];
-
-            if (!HaloReach.SwapData.ContainsKey(vanMap))
-                HaloReach.SwapData.Add(vanMap, data);
-            else
+            if (HaloReach.SwapData.ContainsKey(vanMap))
             {
+                //remove old entry
                 HaloReach.SwapData.Remove(vanMap);
-                HaloReach.SwapData.Add(vanMap, data);
                 LogLine("Overwrote existing swap.");
             }
+
+            //add new entry and swap maps
+            HaloReach.AddMapSwapData(vanMap, vanMap, modMap);
+            HaloReach.ReloadMaps();
+            HaloReach.SaveSwapData();
+
             UpdateSwapList();
-            //create hard link to backup file
-            bool t = FileUtil.CreateHardLink(HaloReach.VanillaMaps[vanMap], HaloReach.VanillaBackupMaps[vanMap]);
             LogLine("Added \"" + vanMap + "\" -> \"" + modMap + "\" to swap list.");
+
             btnHRLoadQuick.Enabled = true;
         }
 
@@ -391,15 +460,50 @@ namespace HaloMods
                 }
                 i++;
             }
-            HaloReach.SwapData.Remove(swapName);
+
+            if (!HaloReach.SwapData[swapName].OtherFile)
+            {
+                HaloReach.SwapToVanilla(swapName);
+                HaloReach.SwapData.Remove(swapName);
+            }
+            else
+            {
+                HaloReach.RestoreOriginal(swapName);
+                LogLine("Moved vanilla file back of original location");
+            }
+            HaloReach.SaveSwapData();
             UpdateSwapList();
         }
 
         private void btnHRDeleteAll_Click(object sender, EventArgs e)
         {
+            List<SwapData> deletes = new List<SwapData>();
+            foreach (var item in HaloReach.SwapData)
+            {
+                if (!HaloReach.SwapData[item.Key].OtherFile)
+                {
+                    HaloReach.SwapToVanilla(item.Key);
+                }
+                else
+                {
+                    //deletes.Add(item.Value);
+                    HaloReach.RestoreOriginal(item.Key, false);
+
+                }
+                //if (item.Value.OtherFile)
+                //{
+                //    File.Delete(item.Value.VanillaFilePath);
+                //    File.Move(ModsLocation + "\\Vanilla\\Halo Reach\\" + item.Value.VanillaFileName, item.Value.VanillaFilePath);
+                //    LogLine("Moved vanilla file back of original location");
+                //}
+            }
+
+            LogLine("Moved vanilla file back of original location");
             HaloReach.SwapData.Clear();
+            HaloReach.SaveSwapData();
             UpdateSwapList();
         }
+
 
         #endregion
 
@@ -418,7 +522,6 @@ namespace HaloMods
 
         private void btnHRMod_Click(object sender, EventArgs e)
         {
-
             string ogFile = txtHROriginalFile.Text;
             string modFile = txtHRModdedFile.Text;
 
@@ -455,6 +558,7 @@ namespace HaloMods
             swap.ModdedFilePath = modFile;
             swap.VanillaFileName = ogFilename;
             swap.VanillaFilePath = ogFile;
+            swap.OtherFile = true;
 
             //backup Vanilla file
             if (!File.Exists(ModsLocation + "\\Vanilla\\Halo Reach\\" + ogFilename))
@@ -484,12 +588,107 @@ namespace HaloMods
         }
         private void btnHROtherQuickSwap_Click(object sender, EventArgs e)
         {
-            Log("Nothing");
+            string ogFile = txtHROriginalFile.Text;
+            string modFile = txtHRModdedFile.Text;
+
+            if (ogFile == "" || modFile == "")
+            {
+                LogLine("Please select both files.");
+                return;
+            }
+            else if (ogFile == modFile)
+            {
+                LogLine("The files are the same.");
+                return;
+            }
+            else if (!File.Exists(ogFile) || !File.Exists(modFile))
+            {
+                LogLine("Can't find one of the files.");
+                return;
+            }
+            else if (ogFile[0] != modFile[0])
+            {
+                LogLine("Files have to be on the same drive.");
+                return;
+            }
+
+            btnHRMod.Enabled = false;
+
+            string[] temp = ogFile.Split('\\');
+            string ogFilename = temp[temp.Length - 1];
+            temp = modFile.Split('\\');
+            string modFilename = temp[temp.Length - 1];
+
+            SwapData swap = new SwapData();
+            swap.ModdedFileName = modFilename;
+            swap.ModdedFilePath = modFile;
+            swap.VanillaFileName = ogFilename;
+            swap.VanillaFilePath = ogFile;
+            swap.NewFileName = ogFilename;
+            swap.NewFilePath = ModsLocation + "\\Vanilla\\Halo Reach\\" + ogFilename;
+            swap.OtherFile = true;
+
+            //backup Vanilla file
+            if (!File.Exists(ModsLocation + "\\Vanilla\\Halo Reach\\" + ogFilename))
+            {
+                Log("Backing up \"" + ogFilename + "\"");
+                File.Move(ogFile, ModsLocation + "\\Vanilla\\Halo Reach\\" + ogFilename);
+                LogLine(". Done");
+            }
+            else
+            {
+                LogLine("Backup file already exist, restore the backup to it original location and try again. Located at \"" + ModsLocation + "\\Vanilla\\Halo Reach\\" + ogFilename + "\"");
+                btnHRMod.Enabled = true;
+                return;
+            }
+
+            HaloReach.AddSwapData(ogFilename, swap);
+
+            //HaloReach.SwapData.Add(ogFilename, swap);
+
+            //bool t = FileUtil.CreateHardLink(ogFile, modFile);
+            HaloReach.SaveSwapData();
+
+            UpdateSwapList();
+
+            LogLine("Files swaped.");
+            btnHRMod.Enabled = true;
         }
 
         private void btnDeleteTempSwap_Click(object sender, EventArgs e)
         {
+            int index = lstTempSwap.SelectedIndex;
+            if (index == -1)
+            {
+                LogLine("Please select an item from the temp swap list.");
+                return;
+            }
 
+            btnDeleteTempSwap.Enabled = false;
+
+            int i = 0;
+            string tempIndex = "";
+            foreach (var item in TempSwap)
+            {
+                if (i == index)
+                {
+                    tempIndex = item.Key;
+                    //restore original file
+                    //HaloReach.RestoreOriginal(item.Key);
+                    File.Delete(TempSwap[item.Key].VanillaFilePath);
+                    File.Move(ModsLocation + "\\Vanilla\\Halo Reach\\" + TempSwap[item.Key].VanillaFileName, TempSwap[item.Key].VanillaFilePath);
+                    LogLine("Moved vanilla file back of original location");
+                    break;
+                }
+                i++;
+            }
+            TempSwap.Remove(tempIndex);
+            lstTempSwap.Items.Clear();
+            foreach (var item in TempSwap)
+            {
+                lstTempSwap.Items.Add(item.Value.VanillaFilePath + " -> " + item.Value.ModdedFileName);
+            }
+            btnDeleteTempSwap.Enabled = true;
         }
 
         #endregion
@@ -518,6 +717,20 @@ namespace HaloMods
             }
         }
 
-
+        private void HaloMods_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (var item in TempSwap)
+            {
+                //restore original file
+                File.Delete(item.Value.VanillaFilePath);
+                File.Move(ModsLocation + "\\Vanilla\\Halo Reach\\" + item.Value.VanillaFileName, item.Value.VanillaFilePath);
+                LogLine("Moved vanilla file back of original location");
+            }
+            lstTempSwap.Items.Clear();
+            foreach (var item in TempSwap)
+            {
+                lstTempSwap.Items.Add(item.Value.VanillaFilePath + " -> " + item.Value.ModdedFileName);
+            }
+        }
     }
 }

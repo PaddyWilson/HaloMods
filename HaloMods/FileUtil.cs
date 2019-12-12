@@ -28,8 +28,6 @@ namespace HaloMods
 
         public static bool CreateHardLink(string ToFile, string FromFile)
         {
-            //ToFile = ToFile.Replace("\\", "/");
-            //FromFile = FromFile.Replace("\\", "/");
             return CreateHardLink(ToFile, FromFile, IntPtr.Zero);
         }
 
@@ -123,7 +121,7 @@ namespace HaloMods
                     }
                 }
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 Console.WriteLine("ERROR Can't hexedit file. File not found. \"{0}\"", FileName);
                 return false;

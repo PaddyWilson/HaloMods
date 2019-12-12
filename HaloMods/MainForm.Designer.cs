@@ -539,6 +539,7 @@
             this.Controls.Add(this.btnModded);
             this.Name = "HaloMods";
             this.Text = "Halo Mods";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HaloMods_FormClosing);
             this.tabPage2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
