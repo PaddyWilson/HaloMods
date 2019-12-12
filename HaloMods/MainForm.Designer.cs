@@ -64,6 +64,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.btnResetEveryThing = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnStartupVideo = new System.Windows.Forms.Button();
@@ -195,6 +197,8 @@
             // lstHRSwapsToLoad
             // 
             this.lstHRSwapsToLoad.FormattingEnabled = true;
+            this.lstHRSwapsToLoad.Items.AddRange(new object[] {
+            "No Swaps"});
             this.lstHRSwapsToLoad.Location = new System.Drawing.Point(451, 21);
             this.lstHRSwapsToLoad.Name = "lstHRSwapsToLoad";
             this.lstHRSwapsToLoad.Size = new System.Drawing.Size(265, 238);
@@ -262,6 +266,8 @@
             // lstTempSwap
             // 
             this.lstTempSwap.FormattingEnabled = true;
+            this.lstTempSwap.Items.AddRange(new object[] {
+            "No Swaps"});
             this.lstTempSwap.Location = new System.Drawing.Point(445, 25);
             this.lstTempSwap.Name = "lstTempSwap";
             this.lstTempSwap.Size = new System.Drawing.Size(259, 43);
@@ -374,8 +380,7 @@
             // 
             this.lstHRModdedMaps.FormattingEnabled = true;
             this.lstHRModdedMaps.Items.AddRange(new object[] {
-            "cex_prisoner.map",
-            "forge_world(moded).map"});
+            "No Maps Loaded"});
             this.lstHRModdedMaps.Location = new System.Drawing.Point(286, 21);
             this.lstHRModdedMaps.Name = "lstHRModdedMaps";
             this.lstHRModdedMaps.Size = new System.Drawing.Size(156, 238);
@@ -385,8 +390,7 @@
             // 
             this.lstHRVanillaMaps.FormattingEnabled = true;
             this.lstHRVanillaMaps.Items.AddRange(new object[] {
-            "forge_world.map",
-            "cex_prisoner.map"});
+            "No Maps Loaded"});
             this.lstHRVanillaMaps.Location = new System.Drawing.Point(6, 21);
             this.lstHRVanillaMaps.Name = "lstHRVanillaMaps";
             this.lstHRVanillaMaps.Size = new System.Drawing.Size(156, 238);
@@ -445,6 +449,8 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label12);
+            this.tabPage3.Controls.Add(this.btnResetEveryThing);
             this.tabPage3.Controls.Add(this.label4);
             this.tabPage3.Controls.Add(this.label1);
             this.tabPage3.Controls.Add(this.btnStartupVideo);
@@ -456,6 +462,26 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(130, 147);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(395, 13);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "Restores your install to before any mods. Does not delete any of your modded file" +
+    "s.";
+            // 
+            // btnResetEveryThing
+            // 
+            this.btnResetEveryThing.Location = new System.Drawing.Point(6, 142);
+            this.btnResetEveryThing.Name = "btnResetEveryThing";
+            this.btnResetEveryThing.Size = new System.Drawing.Size(118, 23);
+            this.btnResetEveryThing.TabIndex = 4;
+            this.btnResetEveryThing.Text = "Reset All To Vanilla";
+            this.btnResetEveryThing.UseVisualStyleBackColor = true;
+            this.btnResetEveryThing.Click += new System.EventHandler(this.btnResetEveryThing_Click);
             // 
             // label4
             // 
@@ -602,5 +628,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btnDeleteTempSwap;
         private System.Windows.Forms.ListBox lstTempSwap;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btnResetEveryThing;
     }
 }

@@ -779,5 +779,68 @@ namespace HaloMods
                 lstTempSwap.Items.Add(item.Value.VanillaFilePath + " -> " + item.Value.ModdedFileName);
             }
         }
+
+        private void btnResetEveryThing_Click(object sender, EventArgs e)
+        {
+            btnResetEveryThing.Enabled = false;
+            LogLine("Restoring install to vanilla.");
+            //restore startup video
+            string og = MCCLocation + StartupMovieFile;
+            string rn = MCCLocation + StartupMovieFile + ".bk";
+
+            //justs renames the video file
+            if (File.Exists(rn))
+            {
+                Log("Enabling start up video");
+                File.Move(rn, og);
+                btnStartupVideo.Text = "Disable Startup Video";
+            }
+
+            //restore MMC.pak
+            if (File.Exists(ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak"))
+            {
+                LogLine("Restoring \"MCC-WindowsNoEditor.pak\".");
+                File.Delete(MCCLocation + OriginalMCCpakFile);
+                File.Move(ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak", MCCLocation + OriginalMCCpakFile);
+                try
+                {
+                    File.Delete(ModsLocation + "\\Mods\\MCC-WindowsNoEditor.pak");
+                }
+                catch (Exception) { }
+
+            }
+
+            HaloReach.ReloadMaps();
+
+            LogLine("Restoring Map " + HaloReach.VanillaBackupMaps.Count + " Files.");
+            foreach (var item in HaloReach.VanillaBackupMaps)
+            {
+                if (File.Exists(item.Value))
+                {
+                    if (File.Exists(HaloReach.VanillaMapLocation + "\\" + item.Key))
+                        File.Delete(HaloReach.VanillaMapLocation + "\\" + item.Key);
+                    File.Move(item.Value, HaloReach.VanillaMapLocation + "\\" + item.Key);
+                }
+            }
+
+            foreach (var item in HaloReach.SwapData)
+            {
+                HaloReach.RestoreOriginal(item.Key, false);
+            }
+
+            LogLine("Restoring Temp Files.");
+            foreach (var item in TempSwap)
+            {
+                File.Delete(item.Value.VanillaFilePath);
+                File.Move(item.Value.NewFilePath, item.Value.VanillaFilePath);
+            }
+
+            File.Delete("HaloReach.json");
+
+            Setup();
+
+            LogLine("Restoring is finished.");
+            btnResetEveryThing.Enabled = true;
+        }
     }
 }

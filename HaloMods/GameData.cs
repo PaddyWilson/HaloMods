@@ -114,8 +114,11 @@ namespace HaloMods
             if (!SwapData.ContainsKey(key))
                 return;
 
-            File.Delete(SwapData[key].VanillaFilePath);
-            File.Move(SwapData[key].NewFilePath, SwapData[key].VanillaFilePath);
+            if (File.Exists(SwapData[key].VanillaFilePath))
+                File.Delete(SwapData[key].VanillaFilePath);
+            if (File.Exists(SwapData[key].NewFilePath))
+                File.Move(SwapData[key].NewFilePath, SwapData[key].VanillaFilePath);
+
             if (deleteEntry)
                 SwapData.Remove(key);
         }
