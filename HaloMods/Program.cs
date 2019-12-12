@@ -17,6 +17,8 @@ namespace HaloMods
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new HaloMods());
 
+            return;
+
             string HaloInstallFolder = @"D:/- Halo/Clean/";
             string VanillaFolder = HaloInstallFolder + @"MODS/Vanilla Files/";
             string ModsFolder = HaloInstallFolder + @"MODS/Mods/";
@@ -283,11 +285,5 @@ namespace HaloMods
             }
 
         }
-    }
-
-    public struct HexEditData
-    {
-        public long Position;
-        public byte Bytes;
     }
 }
