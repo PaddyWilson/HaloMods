@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,11 @@ namespace HaloMods
           IntPtr lpSecurityAttributes
          );
 
-        public static bool CreateHardLink(string FromFile, string ToFile)
+        public static bool CreateHardLink(string ToFile, string FromFile)
         {
-            return CreateHardLink(FromFile, ToFile, IntPtr.Zero);
+            //ToFile = ToFile.Replace("\\", "/");
+            //FromFile = FromFile.Replace("\\", "/");
+            return CreateHardLink(ToFile, FromFile, IntPtr.Zero);
         }
 
         public static Dictionary<string, string> GetListOfAllFiles(string Dir, string[] IgnoreFolders, string[] IgnoreFiles)
@@ -97,7 +100,7 @@ namespace HaloMods
             string[] TempFiles = Directory.GetFiles(Dir);
             foreach (var item in TempFiles)
             {
-                FilesNames.Add(item.Remove(0, Dir.Length+1), item);
+                FilesNames.Add(item.Remove(0, Dir.Length + 1), item);
             }
             return FilesNames;
         }
@@ -138,6 +141,25 @@ namespace HaloMods
                 if (folder.ShowDialog() == DialogResult.OK)
                 {
                     path = folder.SelectedPath;
+                }
+            }));
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+            t.Join();
+            return path;
+        }
+
+        public static string OpenFileDiag()
+        {
+            string path = "";
+            Thread t = new Thread((ThreadStart)(() =>
+            {
+                System.Windows.Forms.OpenFileDialog folder = new System.Windows.Forms.OpenFileDialog() { };
+
+                if (folder.ShowDialog() == DialogResult.OK)
+                {
+                    path = folder.FileName;
                 }
             }));
 

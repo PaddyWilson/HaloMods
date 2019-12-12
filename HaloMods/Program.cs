@@ -13,6 +13,10 @@ namespace HaloMods
     {
         static void Main(string[] args)
         {
+            //FileStuff.CreateHardLink(@"C:\Users\GGGGG\Desktop\New folder\ext Document (2).txt", @"C:\Users\GGGGG\Desktop\New folder\New Text Document (2).txt", IntPtr.Zero);
+            //FileUtil.CreateHardLink(@"C:\Users\GGGGG\Desktop\New folder\ext.txt", @"C:\Users\GGGGG\Desktop\New folder\New Text Document (2).txt", IntPtr.Zero);
+            //FileUtil.CreateHardLink(@"C:\Users\GGGGG\Desktop\New folder\New Text Document (2).txt", @"C:\Users\GGGGG\Desktop\New folder\New (2).txt", IntPtr.Zero);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new HaloMods());

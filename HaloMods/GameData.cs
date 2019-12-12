@@ -25,7 +25,7 @@ namespace HaloMods
         public Dictionary<string, string> VanillaBackupMaps = new Dictionary<string, string>();
         public Dictionary<string, string> ModdedMaps = new Dictionary<string, string>();
 
-        public List<SwapData> SwapData = new List<SwapData>();
+        public Dictionary<string, SwapData> SwapData = new Dictionary<string, SwapData>();
 
         public GameData(string MapLocationVanilla, string MapLocationVanillaBackup, string MapLocationModded)
         {
@@ -38,5 +38,12 @@ namespace HaloMods
             ModdedMaps = FileUtil.GetDicOfFiles(MapLocationModded);
         }
 
+
+        public void ReloadMaps()
+        {
+            //VanillaMaps = FileUtil.GetDicOfFiles(MapLocationVanilla);
+            VanillaBackupMaps = FileUtil.GetDicOfFiles(MapLocationVanillaBackup);
+            ModdedMaps = FileUtil.GetDicOfFiles(MapLocationModded);
+        }
     }
 }
