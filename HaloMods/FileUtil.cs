@@ -166,5 +166,37 @@ namespace HaloMods
             t.Join();
             return path;
         }
+
+        public static bool IsFileInUse(string FileName)
+        {
+            FileInfo file = new FileInfo(FileName);
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
+        }
+
+        public static string GetFileName(string File)
+        {
+            if (File == "" || File == null)
+                return "";
+
+            string[] temp = File.Split('\\');
+            return temp[temp.Length - 1];
+        }
     }
 }

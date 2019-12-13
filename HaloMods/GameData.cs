@@ -10,16 +10,84 @@ namespace HaloMods
 {
     public class SwapData
     {
+        //data of the original file
         public string VanillaFilePath;
         public string VanillaFileName;
-
+        //data about where the original is now 
         public string NewFilePath;
         public string NewFileName;
-
+        //data about modded file
         public string ModdedFilePath;
         public string ModdedFileName;
 
+        //TODO: remove
         public bool OtherFile = false;
+        public SwapData() { }
+
+        public SwapData(string OriginalFile, string NewFile, string ModdedFile)
+        {
+            VanillaFilePath = OriginalFile;
+            VanillaFileName = FileUtil.GetFileName(OriginalFile);
+            NewFilePath = NewFile;
+            NewFileName = FileUtil.GetFileName(NewFile);
+            ModdedFilePath = ModdedFile;
+            ModdedFileName = FileUtil.GetFileName(ModdedFile);
+        }
+
+        public bool MoveOriginalFile(bool DeleteIfExists = false)
+        {
+            //OG file already backed up
+            if (File.Exists(NewFilePath) && !DeleteIfExists)
+            {
+                FileUtil.CreateHardLink(VanillaFilePath, NewFilePath);
+                return true;
+            }
+
+            if (FileUtil.IsFileInUse(VanillaFilePath))
+                return false;//can't backup 
+
+            if (DeleteIfExists)
+                File.Delete(NewFilePath);
+
+            File.Move(VanillaFilePath, NewFilePath);
+            FileUtil.CreateHardLink(VanillaFilePath, NewFilePath);
+
+            return true;
+        }
+
+        public bool SwapToModded()
+        {
+            if (FileUtil.IsFileInUse(VanillaFilePath))
+                return false;
+
+            File.Delete(VanillaFilePath);
+            FileUtil.CreateHardLink(VanillaFilePath, ModdedFilePath);
+            return true;
+        }
+
+        public bool SwapToVanilla()
+        {
+            if (FileUtil.IsFileInUse(VanillaFilePath))
+                return false;
+
+            File.Delete(VanillaFilePath);
+            FileUtil.CreateHardLink(VanillaFilePath, ModdedFilePath);
+            return true;
+        }
+
+        public bool RestoreOriginalFiles()
+        {
+            if (FileUtil.IsFileInUse(VanillaFilePath))
+                return false;
+
+            if (!File.Exists(NewFilePath))
+                return false;
+
+            if (File.Exists(VanillaFilePath))//Vanilla file may have already been delete somehow
+                File.Delete(VanillaFilePath);
+            File.Move(NewFilePath, VanillaFilePath);
+            return true;
+        }
     }
 
     public class GameData
@@ -76,17 +144,24 @@ namespace HaloMods
             if (!SwapData.ContainsKey(key))
                 return;
 
-            File.Delete(SwapData[key].VanillaFilePath);
-            FileUtil.CreateHardLink(SwapData[key].VanillaFilePath, SwapData[key].ModdedFilePath);
+            SwapData[key].SwapToModded();
         }
 
-        public void SwapToModded()
+        public int SwapToModded()
         {
-            foreach (var item in SwapData.Keys)
+            int count = 0;
+            foreach (var item in SwapData)
             {
-                File.Delete(SwapData[item].VanillaFilePath);
-                FileUtil.CreateHardLink(SwapData[item].VanillaFilePath, SwapData[item].ModdedFilePath);
+                if (item.Value.SwapToModded())
+                    count++;
+                //try
+                //{
+                //    File.Delete(SwapData[item].VanillaFilePath);
+                //    FileUtil.CreateHardLink(SwapData[item].VanillaFilePath, SwapData[item].ModdedFilePath);
+                //}
+                //catch (Exception) { }
             }
+            return count;
         }
 
         public void SwapToVanilla(string key)
@@ -94,18 +169,24 @@ namespace HaloMods
             if (!SwapData.ContainsKey(key))
                 return;
 
-            File.Delete(SwapData[key].VanillaFilePath);
-            FileUtil.CreateHardLink(SwapData[key].VanillaFilePath, SwapData[key].NewFilePath);
+            SwapData[key].SwapToVanilla();
         }
 
-        public void SwapToVanilla()
+        public int SwapToVanilla()
         {
-            foreach (var item in SwapData.Keys)
+            int count = 0;
+            foreach (var item in SwapData)
             {
-                File.Delete(SwapData[item].VanillaFilePath);
-                FileUtil.CreateHardLink(SwapData[item].VanillaFilePath, SwapData[item].NewFilePath);
+                if (item.Value.SwapToVanilla())
+                    count++;
+                //try
+                //{
+                //    File.Delete(SwapData[item].VanillaFilePath);
+                //    FileUtil.CreateHardLink(SwapData[item].VanillaFilePath, SwapData[item].NewFilePath);
+                //}
+                //catch (Exception) { }
             }
-
+            return count;
         }
 
         // Restores the original file and removes the item from the swap list
@@ -114,10 +195,12 @@ namespace HaloMods
             if (!SwapData.ContainsKey(key))
                 return;
 
-            if (File.Exists(SwapData[key].VanillaFilePath))
-                File.Delete(SwapData[key].VanillaFilePath);
-            if (File.Exists(SwapData[key].NewFilePath))
-                File.Move(SwapData[key].NewFilePath, SwapData[key].VanillaFilePath);
+            SwapData[key].RestoreOriginalFiles();
+
+            //if (File.Exists(SwapData[key].VanillaFilePath))
+            //    File.Delete(SwapData[key].VanillaFilePath);
+            //if (File.Exists(SwapData[key].NewFilePath))
+            //    File.Move(SwapData[key].NewFilePath, SwapData[key].VanillaFilePath);
 
             if (deleteEntry)
                 SwapData.Remove(key);
