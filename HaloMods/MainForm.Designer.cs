@@ -365,6 +365,7 @@
             this.label7.Size = new System.Drawing.Size(217, 17);
             this.label7.TabIndex = 19;
             this.label7.Text = "Swaps to Load With Quick Switch";
+            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // btnHRSwapVanilla
             // 
@@ -468,10 +469,10 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(130, 147);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(395, 13);
+            this.label12.Size = new System.Drawing.Size(537, 13);
             this.label12.TabIndex = 5;
             this.label12.Text = "Restores your install to before any mods. Does not delete any of your modded file" +
-    "s.";
+    "s. Do this with the game closed.";
             // 
             // btnResetEveryThing
             // 

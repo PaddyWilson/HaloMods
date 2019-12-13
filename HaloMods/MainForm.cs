@@ -190,7 +190,10 @@ namespace HaloMods
             }
 
             LogLine("Switching " + HaloReach.SwapData.Count + " items to vanilla.");
-            HaloReach.SwapToVanilla();
+            int count = HaloReach.SwapToVanilla();
+            if (count < HaloReach.SwapData.Count)
+                LogLine("Swaped " + count + " to vanilla files. Not all files swaped. If the game is running close it.");
+
             //foreach (var item in HaloReach.SwapData.Keys)
             //{
             //    //swap other files
@@ -237,15 +240,9 @@ namespace HaloMods
             }
 
             LogLine("Switching " + HaloReach.SwapData.Count + " items to modded.");
-            try
-            {
-                HaloReach.SwapToModded();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            int count = HaloReach.SwapToModded();
+            if (count < HaloReach.SwapData.Count)
+                LogLine("Swaped " + count + " to modded files. Not all files swaped. If the game is running close it.");
 
             LogLine("Swaped to Modded.");
             btnModded.Enabled = true;
@@ -364,7 +361,7 @@ namespace HaloMods
 
             //mod the copy to enable forge
             FileUtil.HexEdit(ForgeFileSwap.ModdedFilePath, enableForge);
-            
+
             //FileUtil.CreateHardLink(MCCLocation + OriginalMCCpakFile, ModsLocation + "\\Vanilla\\MCC-WindowsNoEditor.pak");
 
             LogLine("Forge can now be enabled by pressing the \"Modded\" button.");
@@ -557,16 +554,8 @@ namespace HaloMods
                 }
                 else
                 {
-                    //deletes.Add(item.Value);
-                    HaloReach.RestoreOriginal(item.Key, false);
-
+                    HaloReach.RestoreAllOrigianlFiles();
                 }
-                //if (item.Value.OtherFile)
-                //{
-                //    File.Delete(item.Value.VanillaFilePath);
-                //    File.Move(ModsLocation + "\\Vanilla\\Halo Reach\\" + item.Value.VanillaFileName, item.Value.VanillaFilePath);
-                //    LogLine("Moved vanilla file back of original location");
-                //}
             }
 
             LogLine("Moved vanilla file back of original location");
@@ -825,7 +814,7 @@ namespace HaloMods
             {
                 LogLine("Restoring \"MCC-WindowsNoEditor.pak\".");
                 if (ForgeFileSwap.RestoreOriginalFiles())
-                {                    
+                {
                     if (File.Exists(ForgeFileSwap.ModdedFilePath))
                         File.Delete(ForgeFileSwap.ModdedFilePath);
                 }
@@ -845,28 +834,29 @@ namespace HaloMods
                     if (File.Exists(HaloReach.VanillaMapLocation + "\\" + item.Key))
                         File.Delete(HaloReach.VanillaMapLocation + "\\" + item.Key);
                     File.Move(item.Value, HaloReach.VanillaMapLocation + "\\" + item.Key);
+                    HaloReach.SwapData.Remove(item.Key);
                 }
             }
 
-            foreach (var item in HaloReach.SwapData)
-            {
-                HaloReach.RestoreOriginal(item.Key, false);
-            }
+            HaloReach.RestoreAllOrigianlFiles();
+            HaloReach.ReloadMaps();
+            HaloReach.SaveSwapData();
 
             LogLine("Restoring Temp Files.");
             foreach (var item in TempSwap)
             {
                 item.Value.RestoreOriginalFiles();
-                //File.Delete(item.Value.VanillaFilePath);
-                //File.Move(item.Value.NewFilePath, item.Value.VanillaFilePath);
             }
-
-            //File.Delete("HaloReach.json");
 
             Setup();
 
             LogLine("Restoring is finished.");
             btnResetEveryThing.Enabled = true;
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+            LogLine("Why did you click this?");
         }
     }
 }

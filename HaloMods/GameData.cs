@@ -60,7 +60,15 @@ namespace HaloMods
             if (FileUtil.IsFileInUse(VanillaFilePath))
                 return false;
 
-            File.Delete(VanillaFilePath);
+            try
+            {
+                File.Delete(VanillaFilePath);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                return false;//cant delete file
+            }
+
             FileUtil.CreateHardLink(VanillaFilePath, ModdedFilePath);
             return true;
         }
@@ -70,8 +78,16 @@ namespace HaloMods
             if (FileUtil.IsFileInUse(VanillaFilePath))
                 return false;
 
-            File.Delete(VanillaFilePath);
-            FileUtil.CreateHardLink(VanillaFilePath, ModdedFilePath);
+            try
+            {
+                File.Delete(VanillaFilePath);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                return false;//cant delete file
+            }
+
+            FileUtil.CreateHardLink(VanillaFilePath, NewFilePath);
             return true;
         }
 
@@ -84,7 +100,15 @@ namespace HaloMods
                 return false;
 
             if (File.Exists(VanillaFilePath))//Vanilla file may have already been delete somehow
-                File.Delete(VanillaFilePath);
+                try
+                {
+                    File.Delete(VanillaFilePath);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
             File.Move(NewFilePath, VanillaFilePath);
             return true;
         }
@@ -204,6 +228,28 @@ namespace HaloMods
 
             if (deleteEntry)
                 SwapData.Remove(key);
+        }
+
+        public int RestoreAllOrigianlFiles()
+        {
+            List<string> done = new List<string>();
+            int count = 0;
+
+            foreach (var item in SwapData)
+            {
+                if (item.Value.RestoreOriginalFiles())
+                {
+                    count++;
+                    done.Add(item.Key);
+                }
+            }
+
+            foreach (var item in done)
+            {
+                SwapData.Remove(item);
+            }
+
+            return count;
         }
 
         public bool AddMapSwapData(string key, string VanillaFileName, string ModdedFileName)
