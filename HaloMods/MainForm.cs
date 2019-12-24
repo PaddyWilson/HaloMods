@@ -858,5 +858,10 @@ namespace HaloMods
         {
             LogLine("Why did you click this?");
         }
+
+        private void btnOpenModsFolder_Click(object sender, EventArgs e)
+        {
+            FileUtil.OpenFileExplorer(ModsLocation + "\\Mods\\Halo Reach\\Maps");
+        }
     }
 }

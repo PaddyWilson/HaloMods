@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9867D100-9C65-4778-88E1-D4C9E39E7193}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>HaloMods</RootNamespace>
     <AssemblyName>HaloMods</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
