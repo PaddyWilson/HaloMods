@@ -863,5 +863,18 @@ namespace HaloMods
         {
             FileUtil.OpenFileExplorer(ModsLocation + "\\Mods\\Halo Reach\\Maps");
         }
+
+        private void btnReloadMods_Click(object sender, EventArgs e)
+        {
+            HaloReach.ReloadMaps();
+
+            //populate the mods list
+            lstHRModdedMaps.Items.Clear();
+            foreach (var item in HaloReach.ModdedMaps)
+                lstHRModdedMaps.Items.Add(item.Key);
+            //select first item
+            if (HaloReach.ModdedMaps.Count > 0)
+                lstHRModdedMaps.SelectedIndex = 0;
+        }
     }
 }

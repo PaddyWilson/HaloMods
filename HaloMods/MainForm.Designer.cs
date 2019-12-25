@@ -74,6 +74,7 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.btnOpenModsFolder = new System.Windows.Forms.Button();
+			this.btnReloadMods = new System.Windows.Forms.Button();
 			this.tabPage2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -174,6 +175,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.btnReloadMods);
 			this.tabPage1.Controls.Add(this.btnOpenModsFolder);
 			this.tabPage1.Controls.Add(this.lstHRSwapsToLoad);
 			this.tabPage1.Controls.Add(this.btnHRLoadQuick);
@@ -558,13 +560,23 @@
 			// 
 			// btnOpenModsFolder
 			// 
-			this.btnOpenModsFolder.Location = new System.Drawing.Point(168, 236);
+			this.btnOpenModsFolder.Location = new System.Drawing.Point(168, 207);
 			this.btnOpenModsFolder.Name = "btnOpenModsFolder";
 			this.btnOpenModsFolder.Size = new System.Drawing.Size(112, 23);
 			this.btnOpenModsFolder.TabIndex = 26;
 			this.btnOpenModsFolder.Text = "Open Mods Folder";
 			this.btnOpenModsFolder.UseVisualStyleBackColor = true;
 			this.btnOpenModsFolder.Click += new System.EventHandler(this.btnOpenModsFolder_Click);
+			// 
+			// btnReloadMods
+			// 
+			this.btnReloadMods.Location = new System.Drawing.Point(168, 236);
+			this.btnReloadMods.Name = "btnReloadMods";
+			this.btnReloadMods.Size = new System.Drawing.Size(112, 23);
+			this.btnReloadMods.TabIndex = 27;
+			this.btnReloadMods.Text = "Reload Mods List";
+			this.btnReloadMods.UseVisualStyleBackColor = true;
+			this.btnReloadMods.Click += new System.EventHandler(this.btnReloadMods_Click);
 			// 
 			// HaloMods
 			// 
@@ -644,5 +656,6 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button btnResetEveryThing;
         private System.Windows.Forms.Button btnOpenModsFolder;
-    }
+		private System.Windows.Forms.Button btnReloadMods;
+	}
 }
