@@ -38,6 +38,8 @@
 			this.txtModsLocation = new System.Windows.Forms.TextBox();
 			this.btnModsLocate = new System.Windows.Forms.Button();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.btnReloadMods = new System.Windows.Forms.Button();
+			this.btnOpenModsFolder = new System.Windows.Forms.Button();
 			this.lstHRSwapsToLoad = new System.Windows.Forms.ListBox();
 			this.btnHRLoadQuick = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -73,8 +75,6 @@
 			this.txtLog = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
-			this.btnOpenModsFolder = new System.Windows.Forms.Button();
-			this.btnReloadMods = new System.Windows.Forms.Button();
 			this.tabPage2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -197,6 +197,26 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Halo Reach";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// btnReloadMods
+			// 
+			this.btnReloadMods.Location = new System.Drawing.Point(168, 236);
+			this.btnReloadMods.Name = "btnReloadMods";
+			this.btnReloadMods.Size = new System.Drawing.Size(112, 23);
+			this.btnReloadMods.TabIndex = 27;
+			this.btnReloadMods.Text = "Reload Mods List";
+			this.btnReloadMods.UseVisualStyleBackColor = true;
+			this.btnReloadMods.Click += new System.EventHandler(this.btnReloadMods_Click);
+			// 
+			// btnOpenModsFolder
+			// 
+			this.btnOpenModsFolder.Location = new System.Drawing.Point(168, 207);
+			this.btnOpenModsFolder.Name = "btnOpenModsFolder";
+			this.btnOpenModsFolder.Size = new System.Drawing.Size(112, 23);
+			this.btnOpenModsFolder.TabIndex = 26;
+			this.btnOpenModsFolder.Text = "Open Mods Folder";
+			this.btnOpenModsFolder.UseVisualStyleBackColor = true;
+			this.btnOpenModsFolder.Click += new System.EventHandler(this.btnOpenModsFolder_Click);
 			// 
 			// lstHRSwapsToLoad
 			// 
@@ -558,26 +578,6 @@
 			this.label10.TabIndex = 25;
 			this.label10.Text = "Quit MCC before using Quick Switch";
 			// 
-			// btnOpenModsFolder
-			// 
-			this.btnOpenModsFolder.Location = new System.Drawing.Point(168, 207);
-			this.btnOpenModsFolder.Name = "btnOpenModsFolder";
-			this.btnOpenModsFolder.Size = new System.Drawing.Size(112, 23);
-			this.btnOpenModsFolder.TabIndex = 26;
-			this.btnOpenModsFolder.Text = "Open Mods Folder";
-			this.btnOpenModsFolder.UseVisualStyleBackColor = true;
-			this.btnOpenModsFolder.Click += new System.EventHandler(this.btnOpenModsFolder_Click);
-			// 
-			// btnReloadMods
-			// 
-			this.btnReloadMods.Location = new System.Drawing.Point(168, 236);
-			this.btnReloadMods.Name = "btnReloadMods";
-			this.btnReloadMods.Size = new System.Drawing.Size(112, 23);
-			this.btnReloadMods.TabIndex = 27;
-			this.btnReloadMods.Text = "Reload Mods List";
-			this.btnReloadMods.UseVisualStyleBackColor = true;
-			this.btnReloadMods.Click += new System.EventHandler(this.btnReloadMods_Click);
-			// 
 			// HaloMods
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -589,7 +589,11 @@
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.btnVanilla);
 			this.Controls.Add(this.btnModded);
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(766, 654);
+			this.MinimumSize = new System.Drawing.Size(766, 654);
 			this.Name = "HaloMods";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Halo Mods";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HaloMods_FormClosing);
 			this.tabPage2.ResumeLayout(false);

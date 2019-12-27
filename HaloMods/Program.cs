@@ -9,17 +9,17 @@ using System.Windows.Forms;
 //fsutil.exe hardlink list "D:\- Halo\Clean\haloreach\maps\forge_halo.map"
 namespace HaloMods
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            //FileUtil.GetPathsOfHardLinkedFile(@"C:\Users\GGGGG\Desktop\HaloMCC Install\mcclauncher.exe");
-            //FileUtil.OpenFileExplorer(@"C:\Users\GGGGG\Desktop\HaloMCC Install");
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			//FileUtil.GetPathsOfHardLinkedFile(@"C:\Users\GGGGG\Desktop\HaloMCC Install\mcclauncher.exe");
+			//FileUtil.OpenFileExplorer(@"C:\Users\GGGGG\Desktop\HaloMCC Install");
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HaloMods());
-            return;
-        }
-    }
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new HaloMods());
+			return;
+		}
+	}
 }

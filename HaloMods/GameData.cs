@@ -163,14 +163,6 @@ namespace HaloMods
             }
         }
 
-        public void SwapToModded(string key)
-        {
-            if (!SwapData.ContainsKey(key))
-                return;
-
-            SwapData[key].SwapToModded();
-        }
-
         public int SwapToModded()
         {
             int count = 0;
