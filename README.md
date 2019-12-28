@@ -6,8 +6,6 @@ Disable/Enable the startup video.
 Reset the game to original state.
 
 # Instructions
-Your modded map files go into **ModsLocationFolder\Mods\Halo Reach\Maps\\**.
-
 When you first run the program it will setup some folders in your MCC install folder. If MCC is not installed at the default location you can browse to where ever you have it installed in the setting tab. The mods location has to be on the same drive as MCC.
 
 Your modded map files go into **ModsLocationFolder\Mods\Halo Reach\Maps\\** folder. It does not matter what the names of the map files are. You can open this folder from the Halo Reach tab.
