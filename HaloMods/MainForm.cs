@@ -150,7 +150,7 @@ namespace HaloMods
 			{
 				Logger.LogLine("Swaping MCC-WindowsNoEditor.pak to vanilla.");
 
-				if (ForgeFileSwap.SwapToVanilla())
+				if (!ForgeFileSwap.SwapToVanilla())
 				{
 					Logger.LogLine("Can't swap pak files while game is running.");
 				}
@@ -181,7 +181,7 @@ namespace HaloMods
 			if (File.Exists(ForgeFileSwap.ModdedFilePath))
 			{
 				Logger.LogLine("Swaping MCC-WindowsNoEditor.pak to modded.");
-				if (ForgeFileSwap.SwapToModded())
+				if (!ForgeFileSwap.SwapToModded())
 				{
 					Logger.LogLine("Can't swap pak files while game is running.");
 				}
