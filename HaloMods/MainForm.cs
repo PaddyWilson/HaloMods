@@ -286,8 +286,8 @@ namespace HaloMods
 
 			Logger.LogLine("Modding copy");
 			List<HexEditData> enableForge = new List<HexEditData>() {
-			new HexEditData() { Position = 0x1E302110, Bytes = 0x27},
-			new HexEditData() { Position = 0x1E2F52D0, Bytes = 0x27}};
+			new HexEditData() { Position = 0x2FFC72D0, Bytes = 0x27},
+			new HexEditData() { Position = 0x2FFD4110, Bytes = 0x27}};
 
 			//mod the copy to enable forge
 			FileUtil.HexEdit(ForgeFileSwap.ModdedFilePath, enableForge);
